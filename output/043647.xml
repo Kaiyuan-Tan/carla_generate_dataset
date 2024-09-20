@@ -1,0 +1,59 @@
+<annotation>
+    <folder>output</folder>
+    <filename>043647.png</filename>
+    <path>/home/apg/workspace/carla_client/output/043647.png</path>
+    <source>
+        <database>Unknown</database>
+    </source>
+    <size>
+        <width>800</width>
+        <height>600</height>
+        <depth>3</depth>
+    </size>
+    <segmented>0</segmented>
+    <object>
+        <name>vehicle</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>542.0540370886108</xmin>
+            <ymin>108.94097844733089</ymin>
+            <xmax>582.8484133435765</xmax>
+            <ymax>146.57240686606832</ymax>
+        </bndbox>
+    </object>    <object>
+        <name>vehicle</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>533.6990523380292</xmin>
+            <ymin>139.45071926476865</ymin>
+            <xmax>574.4197088986168</xmax>
+            <ymax>184.9783884695178</ymax>
+        </bndbox>
+    </object>    <object>
+        <name>vehicle</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>126.13864796430013</xmin>
+            <ymin>112.40499866310807</ymin>
+            <xmax>183.5562898214515</xmax>
+            <ymax>151.91620293082352</ymax>
+        </bndbox>
+    </object>    <object>
+        <name>vehicle</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>567.9066373340755</xmin>
+            <ymin>83.3898968270126</ymin>
+            <xmax>606.7430973583258</xmax>
+            <ymax>123.1691512870438</ymax>
+        </bndbox>
+    </object>
+</annotation>
