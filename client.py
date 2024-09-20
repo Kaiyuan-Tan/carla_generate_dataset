@@ -20,7 +20,9 @@ vehicle_bp =bp_lib.find('vehicle.lincoln.mkz_2020')
 vehicle = world.try_spawn_actor(vehicle_bp, random.choice(spawn_points))
 
 # Create a queue to store and retrieve the sensor data
-image_queue = queue.Queue()
+# image_queue = queue.Queue() 
+image_queue = [] # try to use stack instead of queue
+
 # camera.listen(image_queue.put)
 
 # spectator
@@ -37,7 +39,7 @@ camera_bp = bp_lib.find('sensor.camera.rgb')
 camera_init_trans = carla.Transform(carla.Location(z=0))
 camera = world.spawn_actor(camera_bp, camera_init_trans, attach_to=spectator)
 
-camera.listen(image_queue.put)
+camera.listen(lambda data: image_queue.append(data))
 
 # Set up the simulator in synchronous mode
 settings = world.get_settings()
@@ -99,7 +101,7 @@ K_b = build_projection_matrix(image_w, image_h, fov, is_behind_camera=True)
 
 # Retrieve the first image
 world.tick()
-image = image_queue.get()
+image = image_queue.pop()
 
 # Reshape the raw data into an RGB array
 img = np.reshape(np.copy(image.raw_data), (image.height, image.width, 4)) 
@@ -219,19 +221,16 @@ img = np.reshape(np.copy(image.raw_data), (image.height, image.width, 4))
 while True:
     # Retrieve the image
     world.tick()
-    image = image_queue.get()
 
     # Get the camera matrix 
     world_2_camera = np.array(camera.get_transform().get_inverse_matrix())
 
-    frame_path = 'output/%06d' % image.frame
-
     # Save the image
-    image.save_to_disk(frame_path + '.png')
+    # image.save_to_disk(frame_path + '.png')
 
     # Initialize the exporter
-    writer = Writer(frame_path + '.png', image_w, image_h)
-
+    # writer = Writer(frame_path + '.png', image_w, image_h)
+    bboxes = []
     for npc in world.get_actors().filter('*vehicle*'):
         # if npc.id != vehicle.id:
             bb = npc.bounding_box
@@ -259,9 +258,20 @@ while True:
 
                     # Add the object to the frame (ensure it is inside the image)
                     if x_min > 0 and x_max < image_w and y_min > 0 and y_max < image_h: 
-                        writer.addObject('vehicle', x_min, y_min, x_max, y_max)
+                        # writer.addObject('vehicle', x_min, y_min, x_max, y_max)
+                        bboxes.append(('vehicle', x_min, y_min, x_max, y_max))
 
     # Save the bounding boxes in the scene
+
+    world.tick()
+    image = image_queue.pop()
+    frame_path = 'output/%06d' % image.frame
+    image.save_to_disk(frame_path + '.png')
+    writer = Writer(frame_path + '.png', image_w, image_h)
+    for bbox in bboxes:
+        writer.addObject(bbox[0],bbox[1],bbox[2],bbox[3],bbox[4])
     writer.save(frame_path + '.xml')
+
+
 
 # cv2.destroyAllWindows()

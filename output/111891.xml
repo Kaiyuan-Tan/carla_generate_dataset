@@ -1,0 +1,70 @@
+<annotation>
+    <folder>output</folder>
+    <filename>111891.png</filename>
+    <path>/home/apg/workspace/carla_generate_dataset/output/111891.png</path>
+    <source>
+        <database>Unknown</database>
+    </source>
+    <size>
+        <width>800</width>
+        <height>600</height>
+        <depth>3</depth>
+    </size>
+    <segmented>0</segmented>
+    <object>
+        <name>vehicle</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>415.4651486492892</xmin>
+            <ymin>140.66565069838614</ymin>
+            <xmax>443.89580831355903</xmax>
+            <ymax>169.74802958947149</ymax>
+        </bndbox>
+    </object>    <object>
+        <name>vehicle</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>144.02402947973616</xmin>
+            <ymin>118.23935613471319</ymin>
+            <xmax>171.05032007336328</xmax>
+            <ymax>145.85144205048303</ymax>
+        </bndbox>
+    </object>    <object>
+        <name>vehicle</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>100.0059952523736</xmin>
+            <ymin>99.14822905279745</ymin>
+            <xmax>157.18299053716743</xmax>
+            <ymax>138.08512382093767</ymax>
+        </bndbox>
+    </object>    <object>
+        <name>vehicle</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>598.4153114362216</xmin>
+            <ymin>236.42414401860518</ymin>
+            <xmax>688.8930998078594</xmax>
+            <ymax>298.6345901174554</ymax>
+        </bndbox>
+    </object>    <object>
+        <name>vehicle</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>378.35922517357045</xmin>
+            <ymin>209.04370196335418</ymin>
+            <xmax>461.33505349104286</xmax>
+            <ymax>244.5325749671902</ymax>
+        </bndbox>
+    </object>
+</annotation>

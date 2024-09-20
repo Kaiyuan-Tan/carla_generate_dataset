@@ -28,8 +28,8 @@ def draw_boxes(image_path, xml_path):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-xml_file = "/home/apg/workspace/carla_generate_dataset/output/043650.xml"
-image_path = "/home/apg/workspace/carla_generate_dataset/output/043650.png"
+xml_file = "/home/apg/workspace/carla_generate_dataset/output/112077.xml"
+image_path = "/home/apg/workspace/carla_generate_dataset/output/112077.png"
 
 draw_boxes(image_path, xml_file)
 
