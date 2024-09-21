@@ -2,11 +2,11 @@ import cv2
 import os
 
 # Path to the directory containing images
-image_folder = '/home/apg/workspace/carla_client/rgb_output2'
+image_folder = '/home/apg/workspace/carla_generate_dataset/output/images'
 # Path and name of the output video file
-video_filename = 'rgb_output_video2.avi'
+video_filename = 'output_video.avi'
 # Desired frame rate of the video
-frame_rate = 8
+frame_rate = 10
 
 # Get list of image files
 images = [img for img in os.listdir(image_folder) if img.endswith(".jpg") or img.endswith(".png")]

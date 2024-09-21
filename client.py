@@ -6,6 +6,7 @@ import queue
 import numpy as np
 import cv2
 from pascal_voc_writer import Writer
+import os
 
 
 client = carla.Client('localhost', 2000)
@@ -21,7 +22,7 @@ vehicle = world.try_spawn_actor(vehicle_bp, random.choice(spawn_points))
 
 # Create a queue to store and retrieve the sensor data
 # image_queue = queue.Queue() 
-image_queue = [] # try to use stack instead of queue
+image_stack = [] # try to use stack instead of queue
 
 # camera.listen(image_queue.put)
 
@@ -39,7 +40,7 @@ camera_bp = bp_lib.find('sensor.camera.rgb')
 camera_init_trans = carla.Transform(carla.Location(z=0))
 camera = world.spawn_actor(camera_bp, camera_init_trans, attach_to=spectator)
 
-camera.listen(lambda data: image_queue.append(data))
+camera.listen(lambda data: image_stack.append(data))
 
 # Set up the simulator in synchronous mode
 settings = world.get_settings()
@@ -93,18 +94,8 @@ fov = camera_bp.get_attribute("fov").as_float()
 K = build_projection_matrix(image_w, image_h, fov)
 K_b = build_projection_matrix(image_w, image_h, fov, is_behind_camera=True)
 
-# for i in range(50):
-#     vehicle_bp = random.choice(bp_lib.filter('vehicle'))
-#     npc = world.try_spawn_actor(vehicle_bp, random.choice(spawn_points))
-#     if npc:
-#         npc.set_autopilot(True)
-
 # Retrieve the first image
 world.tick()
-image = image_queue.pop()
-
-# Reshape the raw data into an RGB array
-img = np.reshape(np.copy(image.raw_data), (image.height, image.width, 4)) 
 
 # Display the image in an OpenCV display window
 # cv2.namedWindow('ImageWindowName', cv2.WINDOW_AUTOSIZE)
@@ -218,6 +209,18 @@ img = np.reshape(np.copy(image.raw_data), (image.height, image.width, 4))
 #     if cv2.waitKey(1) == ord('q'):
 #         break
 
+output_path = "output/"
+image_path = "images/"
+label_path = "labels/"
+
+if not os.path.exists(output_path + image_path):
+    os.makedirs(output_path + image_path)
+    print("make dir: " + output_path + image_path)
+
+if not os.path.exists(output_path + label_path):
+    os.makedirs(output_path + label_path)
+    print("make dir: " + output_path + label_path)
+
 while True:
     # Retrieve the image
     world.tick()
@@ -258,19 +261,61 @@ while True:
 
                     # Add the object to the frame (ensure it is inside the image)
                     if x_min > 0 and x_max < image_w and y_min > 0 and y_max < image_h: 
-                        # writer.addObject('vehicle', x_min, y_min, x_max, y_max)
-                        bboxes.append(('vehicle', x_min, y_min, x_max, y_max))
+                        center_x = (x_min + x_max)/2
+                        center_y = (y_min + y_max)/2
+                        w_normal = (x_max - x_min)/image_w
+                        h_normal = (y_max - y_min)/image_h
+                        x_normal = center_x/image_w
+                        y_normal = center_y/image_h
+
+                        bboxes.append(('0', x_normal, y_normal, w_normal, h_normal))
+    for npc in world.get_actors().filter('*pedestrian*'):
+        # if npc.id != vehicle.id:
+            bb = npc.bounding_box
+            dist = npc.get_transform().location.distance(spectator.get_transform().location)
+            if dist < 50:
+                forward_vec = spectator.get_transform().get_forward_vector()
+                ray = npc.get_transform().location - spectator.get_transform().location
+                if forward_vec.dot(ray) > 0:
+                    p1 = get_image_point(bb.location, K, world_2_camera)
+                    verts = [v for v in bb.get_world_vertices(npc.get_transform())]
+                    x_max = -10000
+                    x_min = 10000
+                    y_max = -10000
+                    y_min = 10000
+                    for vert in verts:
+                        p = get_image_point(vert, K, world_2_camera)
+                        if p[0] > x_max:
+                            x_max = p[0]
+                        if p[0] < x_min:
+                            x_min = p[0]
+                        if p[1] > y_max:
+                            y_max = p[1]
+                        if p[1] < y_min:
+                            y_min = p[1]
+
+                    # Add the object to the frame (ensure it is inside the image)
+                    if x_min > 0 and x_max < image_w and y_min > 0 and y_max < image_h: 
+                        center_x = (x_min + x_max)/2
+                        center_y = (y_min + y_max)/2
+                        w_normal = (x_max - x_min)/image_w
+                        h_normal = (y_max - y_min)/image_h
+                        x_normal = center_x/image_w
+                        y_normal = center_y/image_h
+
+                        bboxes.append(('1', x_normal, y_normal, w_normal, h_normal))
 
     # Save the bounding boxes in the scene
 
     world.tick()
-    image = image_queue.pop()
-    frame_path = 'output/%06d' % image.frame
-    image.save_to_disk(frame_path + '.png')
-    writer = Writer(frame_path + '.png', image_w, image_h)
-    for bbox in bboxes:
-        writer.addObject(bbox[0],bbox[1],bbox[2],bbox[3],bbox[4])
-    writer.save(frame_path + '.xml')
+    image = image_stack.pop()
+
+    frame_path = '%06d' % image.frame
+    image.save_to_disk(output_path + image_path + frame_path + '.png') # YOLO format
+
+    with open(output_path + label_path + frame_path+".txt", "w", encoding = "utf-8") as file:
+        for bbox in bboxes:
+            file.write(bbox[0]+f" {bbox[1]} {bbox[2]} {bbox[3]} {bbox[4]}\n")
 
 
 
