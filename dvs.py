@@ -7,6 +7,8 @@ import numpy as np
 import cv2
 from pascal_voc_writer import Writer
 import os
+import dvs_api
+import csv
 
 
 client = carla.Client('localhost', 2000)
@@ -22,8 +24,8 @@ vehicle = world.try_spawn_actor(vehicle_bp, random.choice(spawn_points))
 
 # Create a queue to store and retrieve the sensor data
 # image_queue = queue.Queue() 
-image_stack = [] # try to use stack instead of queue
-
+rgb_stack = [] # try to use stack instead of queue
+dvs_stack = [] 
 # camera.listen(image_queue.put)
 
 # spectator
@@ -38,10 +40,17 @@ spectator.set_transform(carla.Transform(carla.Location(x=123.813690, y=3.087291,
 
 # spawn camera
 camera_bp = bp_lib.find('sensor.camera.rgb')
-camera_init_trans = carla.Transform(carla.Location(z=0))
-camera = world.spawn_actor(camera_bp, camera_init_trans, attach_to=spectator)
+dvs_camera_bp = bp_lib.find('sensor.camera.dvs')
+raw_camera_bp = bp_lib.find('sensor.camera.dvs')
 
-camera.listen(lambda data: image_stack.append(data))
+camera_init_trans = carla.Transform(carla.Location(z=0))
+
+camera = world.spawn_actor(camera_bp, camera_init_trans, attach_to=spectator)
+dvs_camera = world.spawn_actor(dvs_camera_bp, camera_init_trans, attach_to=spectator)
+raw_camera = world.spawn_actor(raw_camera_bp, camera_init_trans, attach_to=spectator)
+
+camera.listen(lambda data: rgb_stack.append(data))
+dvs_camera.listen(lambda data: dvs_stack.append(dvs_api.dvs_callback_img(data)))
 
 # Set up the simulator in synchronous mode
 settings = world.get_settings()
@@ -101,6 +110,7 @@ world.tick()
 output_path = "output/"
 image_path = "images/"
 label_path = "labels/"
+event_path = "events/"
 
 if not os.path.exists(output_path + image_path):
     os.makedirs(output_path + image_path)
@@ -109,6 +119,17 @@ if not os.path.exists(output_path + image_path):
 if not os.path.exists(output_path + label_path):
     os.makedirs(output_path + label_path)
     print("make dir: " + output_path + label_path)
+if not os.path.exists(output_path + event_path):
+    os.makedirs(output_path + event_path)
+    print("make dir: " + output_path + event_path)
+
+dvs_output_path = "output/dvs_output.csv"
+with open(dvs_output_path, mode="w",  newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(['x', 'y', 't', 'pol'])
+    file.close()
+
+raw_camera.listen(lambda data: dvs_api.dvs_callback_csv(data, dvs_output_path))
 
 while True:
     # Retrieve the image
@@ -197,10 +218,13 @@ while True:
     # Save the bounding boxes in the scene
 
     world.tick()
-    image = image_stack.pop()
+    image = rgb_stack.pop()
+    event = dvs_stack.pop()
 
     frame_path = '%06d' % image.frame
     image.save_to_disk(output_path + image_path + frame_path + '.png') # YOLO format
+    cv2.imwrite(output_path + event_path + frame_path + '.png', event)
+
 
     with open(output_path + label_path + frame_path+".txt", "w", encoding = "utf-8") as file:
         for bbox in bboxes:

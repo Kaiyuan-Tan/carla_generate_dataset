@@ -1,10 +1,12 @@
 import cv2
 import os
+import show_bbox_api
 
 # Path to the directory containing images
 image_folder = '/home/apg/workspace/carla_generate_dataset/output/images'
+label_folder = '/home/apg/workspace/carla_generate_dataset/output/labels'
 # Path and name of the output video file
-video_filename = 'output_video.avi'
+video_filename = 'rgb_output_video.avi'
 # Desired frame rate of the video
 frame_rate = 10
 
@@ -29,8 +31,12 @@ video = cv2.VideoWriter(video_filename, fourcc, frame_rate, (width, height))
 # Write images to video
 for image in images:
     img_path = os.path.join(image_folder, image)
-    frame = cv2.imread(img_path)
-    video.write(frame)
+    label_name = os.path.splitext(image)[0]+".txt"
+    label_path = os.path.join(label_folder, label_name)
+
+    # show_bbox.draw_frame(img_path label_path)
+    # frame = cv2.imread(img_path)
+    video.write(show_bbox_api.draw_frame(img_path, label_path))
 
 # Release the video writer object
 video.release()

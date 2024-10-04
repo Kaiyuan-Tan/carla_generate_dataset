@@ -65,16 +65,3 @@ def draw_frame(image_path, path):
         elif(name=="1"):
             cv2.rectangle(image, (xmin,ymin),(xmax,ymax),(0,0,255),1)
     return image
-
-# xml_file = "/home/apg/workspace/carla_generate_dataset/output/112077.xml"
-# image_path = "/home/apg/workspace/carla_generate_dataset/output/112077.png"
-
-image_path = "/home/apg/workspace/carla_generate_dataset/output/images/080456.png"
-path = "/home/apg/workspace/carla_generate_dataset/output/labels/080456.txt"
-
-# image_path = "/home/apg/workspace/yolo-dataset/train/images/001002.png"
-# path = "/home/apg/workspace/yolo-dataset/train/labels/001002.txt"
-
-# yolo_txt(path)
-draw_boxes(image_path, path)
-
