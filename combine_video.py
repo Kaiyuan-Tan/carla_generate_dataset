@@ -24,10 +24,10 @@ while True:
         break
 
     if not ret1:
-        frame1 = np.zeros((h1, w1, 3), dtype=np.unit8)
+        frame1 = np.zeros((h1, w1, 3), dtype=np.uint8)
 
     if not ret2:
-        frame2 = np.zeros((h2, w2, 3), dtype=np.unit8)
+        frame2 = np.zeros((h2, w2, 3), dtype=np.uint8)
 
     combined_frame = np.hstack((frame1, frame2))
 

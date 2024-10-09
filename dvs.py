@@ -109,19 +109,22 @@ world.tick()
 
 output_path = "output/"
 image_path = "images/"
-label_path = "labels/"
+rgb_label_path = "rgb_labels/"
 event_path = "events/"
+dvs_label_path = "dvs_labels/"
 
 if not os.path.exists(output_path + image_path):
     os.makedirs(output_path + image_path)
     print("make dir: " + output_path + image_path)
-
-if not os.path.exists(output_path + label_path):
-    os.makedirs(output_path + label_path)
-    print("make dir: " + output_path + label_path)
+if not os.path.exists(output_path + rgb_label_path):
+    os.makedirs(output_path + rgb_label_path)
+    print("make dir: " + output_path + rgb_label_path)
 if not os.path.exists(output_path + event_path):
     os.makedirs(output_path + event_path)
     print("make dir: " + output_path + event_path)
+if not os.path.exists(output_path + dvs_label_path):
+    os.makedirs(output_path + dvs_label_path)
+    print("make dir: " + output_path + dvs_label_path)
 
 dvs_output_path = "output/dvs_output.csv"
 with open(dvs_output_path, mode="w",  newline='') as file:
@@ -144,11 +147,16 @@ while True:
     # Initialize the exporter
     # writer = Writer(frame_path + '.png', image_w, image_h)
     bboxes = []
+    bboxes_dvs = []
     for npc in world.get_actors().filter('*vehicle*'):
         # if npc.id != vehicle.id:
             bb = npc.bounding_box
             dist = npc.get_transform().location.distance(spectator.get_transform().location)
-            if dist < 60:
+            x = npc.get_velocity().x
+            y = npc.get_velocity().y
+            z = npc.get_velocity().z
+            velocity = (x**2+y**2+z**2)**0.5
+            if dist < 70:
                 forward_vec = spectator.get_transform().get_forward_vector()
                 ray = npc.get_transform().location - spectator.get_transform().location
                 if forward_vec.dot(ray) > 0:
@@ -179,10 +187,16 @@ while True:
                         y_normal = center_y/image_h
 
                         bboxes.append(('0', x_normal, y_normal, w_normal, h_normal))
+                        if velocity >=0.1:
+                            bboxes_dvs.append(('0', x_normal, y_normal, w_normal, h_normal))
     for npc in world.get_actors().filter('*pedestrian*'):
         # if npc.id != vehicle.id:
             bb = npc.bounding_box
             dist = npc.get_transform().location.distance(spectator.get_transform().location)
+            x = npc.get_velocity().x
+            y = npc.get_velocity().y
+            z = npc.get_velocity().z
+            velocity = (x**2+y**2+z**2)**0.5
             if dist < 60:
                 forward_vec = spectator.get_transform().get_forward_vector()
                 ray = npc.get_transform().location - spectator.get_transform().location
@@ -214,7 +228,8 @@ while True:
                         y_normal = center_y/image_h
 
                         bboxes.append(('1', x_normal, y_normal, w_normal, h_normal))
-
+                        # if velocity > 0:
+                        bboxes_dvs.append(('1', x_normal, y_normal, w_normal, h_normal))
     # Save the bounding boxes in the scene
 
     world.tick()
@@ -226,11 +241,14 @@ while True:
     cv2.imwrite(output_path + event_path + frame_path + '.png', event)
 
 
-    with open(output_path + label_path + frame_path+".txt", "w", encoding = "utf-8") as file:
+    with open(output_path + rgb_label_path + frame_path+".txt", "w", encoding = "utf-8") as file:
         for bbox in bboxes:
             file.write(bbox[0]+f" {bbox[1]} {bbox[2]} {bbox[3]} {bbox[4]}\n")
         file.close()
-
+    with open(output_path + dvs_label_path + frame_path+".txt", "w", encoding = "utf-8") as file:
+        for bbox in bboxes_dvs:
+            file.write(bbox[0]+f" {bbox[1]} {bbox[2]} {bbox[3]} {bbox[4]}\n")
+        file.close()
 
 
 # cv2.destroyAllWindows()

@@ -3,10 +3,10 @@ import os
 import show_bbox_api
 
 # Path to the directory containing images
-image_folder = '/home/apg/workspace/carla_generate_dataset/output/images'
-label_folder = '/home/apg/workspace/carla_generate_dataset/output/labels'
+image_folder = '/home/apg/workspace/carla_generate_dataset/output/events'
+label_folder = '/home/apg/workspace/carla_generate_dataset/output/dvs_labels'
 # Path and name of the output video file
-video_filename = 'rgb_output_video.avi'
+video_filename = 'dvs_output_video.avi'
 # Desired frame rate of the video
 frame_rate = 10
 
