@@ -65,3 +65,23 @@ def draw_frame(image_path, path):
         elif(name=="1"):
             cv2.rectangle(image, (xmin,ymin),(xmax,ymax),(0,0,255),1)
     return image
+
+def rvt_txt(txt_file):
+    boxes = []
+    with open(txt_file, "r", encoding="utf-8") as file:
+        lines = file.readlines()
+        for line in lines:
+            data = line.strip().split(",")
+            # print(data)
+
+            # center_x = float(data[1])*w
+            # center_y = float(data[2])*h
+
+            xmin = int(float(data[1]))
+            xmax = int((float(data[1])+float(data[3])))
+            ymin = int(float(data[2]))
+            ymax = int((float(data[2])+float(data[4])))
+            frame = int(data[5])
+            name = data[0]
+            boxes.append((name,(xmin,ymin,xmax,ymax), frame))
+    return boxes

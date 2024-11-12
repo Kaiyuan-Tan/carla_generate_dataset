@@ -35,7 +35,7 @@ def dvs_callback_img(data): #store in image
     # data_dict['dvs_image'] = np.zeros((data.height, data.weight, 4), dtype=np.uint8)
     dvs_img = np.zeros((data.height, data.width, 3), dtype=np.uint8)
     dvs_img[dvs_events[:]['y'],dvs_events[:]['x'],dvs_events[:]['pol']*2] = 255
-
+    # print(dvs_events[0]['t'], dvs_events[-1]['t'], max(dvs_events[:]['t']), min(dvs_events[:]['t']))
     # cv2.imwrite(f'dvs_output/{data.frame}.png', dvs_img)
     return dvs_img
 
@@ -47,8 +47,10 @@ def dvs_callback_csv(data, dvs_output_path): # store in csv file
     with open(dvs_output_path, mode="a",  newline='') as file:
         writer = csv.writer(file)
         for event in dvs_events:
+            # combine = event.tolist()
             writer.writerow(event)
         file.close()
+    return dvs_events[0]['t']
     
 # dvs_camera.listen(lambda DVSEventArray: dvs_callback_img(DVSEventArray))
 # time.sleep(3)

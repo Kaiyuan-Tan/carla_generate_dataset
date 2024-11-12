@@ -69,8 +69,8 @@ def draw_frame(image_path, path):
 # xml_file = "/home/apg/workspace/carla_generate_dataset/output/112077.xml"
 # image_path = "/home/apg/workspace/carla_generate_dataset/output/112077.png"
 
-image_path = "/home/apg/workspace/carla_generate_dataset/output/images/080456.png"
-path = "/home/apg/workspace/carla_generate_dataset/output/labels/080456.txt"
+image_path = "/home/apg/workspace/carla_generate_dataset/output/images/059600.png"
+path = "/home/apg/workspace/carla_generate_dataset/output/rgb_labels/059600.txt"
 
 # image_path = "/home/apg/workspace/yolo-dataset/train/images/001002.png"
 # path = "/home/apg/workspace/yolo-dataset/train/labels/001002.txt"
