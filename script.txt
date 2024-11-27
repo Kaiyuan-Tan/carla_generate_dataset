@@ -1,6 +1,6 @@
 NUM_PROCESSES=20  # set to the number of parallel processes to use
 python preprocess_dataset.py /home/apg/workspace/carla_generate_dataset/data /home/apg/workspace/carla_generate_dataset/rvtdataset conf_preprocess/representation/stacked_hist.yaml \
-conf_preprocess/extraction/const_duration.yaml conf_preprocess/filter_gen4.yaml -ds gen4 -np ${NUM_PROCESSES}
+conf_preprocess/extraction/const_duration.yaml conf_preprocess/filter_gen4.yaml -ds gen4 -np 20
 
 
 

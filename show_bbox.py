@@ -2,8 +2,11 @@ import cv2
 import xml.etree.ElementTree as ET
 import os
 
-w = 800
-h = 600
+w = 1280
+h = 720
+
+# w = 800
+# h = 600
 
 def voc_xml(xml_file):
     tree = ET.parse(xml_file)
@@ -69,8 +72,8 @@ def draw_frame(image_path, path):
 # xml_file = "/home/apg/workspace/carla_generate_dataset/output/112077.xml"
 # image_path = "/home/apg/workspace/carla_generate_dataset/output/112077.png"
 
-image_path = "/home/apg/workspace/carla_generate_dataset/output/images/059600.png"
-path = "/home/apg/workspace/carla_generate_dataset/output/rgb_labels/059600.txt"
+image_path = "/home/apg/workspace/carla_generate_dataset/output/images/000312.png"
+path = "/home/apg/workspace/carla_generate_dataset/output/rgb_labels/000312.txt"
 
 # image_path = "/home/apg/workspace/yolo-dataset/train/images/001002.png"
 # path = "/home/apg/workspace/yolo-dataset/train/labels/001002.txt"

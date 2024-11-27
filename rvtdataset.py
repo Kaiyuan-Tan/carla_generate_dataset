@@ -2,15 +2,15 @@ import h5py
 import pandas as pd
 import numpy as np
 
-# data = pd.read_csv('output/dvs_output.csv')
-# with h5py.File("intersection_1_2_td.h5", "w") as h5file:
-#     events_group = h5file.create_group('/events')
-#     events_group.create_dataset('x',data = data['x'].values)
-#     events_group.create_dataset('y',data = data['y'].values)
-#     events_group.create_dataset('p',data = data['pol'].values)
-#     events_group.create_dataset('t',data = data['t'].values)
-#     events_group.create_dataset('height',data = np.array([600]))
-#     events_group.create_dataset('width',data = np.array([800]))
+data = pd.read_csv('output/dvs_output.csv')
+with h5py.File("intersection_1_3_td.h5", "w") as h5file:
+    events_group = h5file.create_group('/events')
+    events_group.create_dataset('x',data = data['x'].values)
+    events_group.create_dataset('y',data = data['y'].values)
+    events_group.create_dataset('p',data = data['pol'].values)
+    events_group.create_dataset('t',data = data['t'].values)
+    events_group.create_dataset('height',data = np.array([720]))
+    events_group.create_dataset('width',data = np.array([1280]))
     
 dtype = np.dtype([
     ('t','<i8'),
@@ -32,7 +32,7 @@ bbox = np.genfromtxt('output/bbox.csv', delimiter = ',', skip_header = 1, dtype 
 #     dtype = dtype
 # )
 # # bbox_array = bbox.to_numpy()
-np.save("intersection_1_2_td.npy", bbox)
+np.save("intersection_1_3_bbox.npy", bbox)
 # bbox = np.load('intersection_1_2_td.npy')
 
 print("FINISH")

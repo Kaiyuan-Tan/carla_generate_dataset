@@ -12,8 +12,8 @@ video_filename = 'dvs_output_video.avi'
 
 # Desired frame rate of the video and frame dimensions
 frame_rate = 200
-H = 600  # Height of the frame
-W = 800  # Width of the frame
+H = 720  # Height of the frame
+W = 1280  # Width of the frame
 
 # Initialize video writer
 fourcc = cv2.VideoWriter_fourcc(*'XVID')  # Use 'XVID' codec for .avi files

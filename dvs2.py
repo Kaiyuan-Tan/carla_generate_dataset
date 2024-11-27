@@ -19,9 +19,11 @@ bp_lib = world.get_blueprint_library()
 spawn_points = world.get_map().get_spawn_points()
 
 # spawn vehicle
-vehicle_bp =bp_lib.find('vehicle.lincoln.mkz_2020')
-vehicle = world.try_spawn_actor(vehicle_bp, random.choice(spawn_points))
-
+# vehicle_blueprints = world.get_blueprint_library().filter('*vehicle*')
+# for i in range(0,80):
+#     world.try_spawn_actor(random.choice(vehicle_blueprints), random.choice(spawn_points))
+# for vehicle in world.get_actors().filter('*vehicle*'):
+#     vehicle.set_autopilot(True)
 # Create a queue to store and retrieve the sensor data
 image_queue = queue.Queue() 
 time_queue = queue.Queue() 
@@ -56,7 +58,6 @@ camera = world.spawn_actor(camera_bp, camera_init_trans, attach_to=spectator)
 raw_camera = world.spawn_actor(raw_camera_bp, camera_init_trans, attach_to=spectator)
 
 # camera.listen(lambda data: rgb_stack.append(data))
-camera.listen(image_queue.put)
 # dvs_camera.listen(lambda data: dvs_stack.append(dvs_api.dvs_callback_img(data)))
 
 # Set up the simulator in synchronous mode
@@ -113,7 +114,7 @@ K_b = build_projection_matrix(image_w, image_h, fov, is_behind_camera=True)
 
 # Retrieve the first image
 # world.tick()
-world.wait_for_tick()
+# world.wait_for_tick()
 
 output_path = "output/"
 image_path = "images/"
@@ -144,13 +145,21 @@ with open("output/bbox.csv", "w", encoding = "utf-8") as file:
     writer = csv.writer(file)
     writer.writerow(['t', 'x', 'y', 'w', 'h', 'class_id'])
     file.close()
-
+# world.tick()
 raw_camera.listen(lambda data: time_queue.put(dvs_api.dvs_callback_csv(data, dvs_output_path)))
+camera.listen(image_queue.put)
+
+world.tick()
+# image = image_queue.get()
+# timestamp = time_queue.get()
+# print(timestamp)
 
 while True:
     # Retrieve the image
-    # world.tick()
-    world.wait_for_tick()
+    world.tick()
+    # world.wait_for_tick()
+    # image = rgb_stack.pop()
+    # world.wait_for_tick()
     # Get the camera matrix 
     world_2_camera = np.array(camera.get_transform().get_inverse_matrix())
 
@@ -205,7 +214,7 @@ while True:
                         if velocity >=0.1:
                             bboxes_dvs.append([x_min, y_min, w, h, '0'])
     # world.tick()
-    world.wait_for_tick()
+    # world.wait_for_tick()
 
     for npc in world.get_actors().filter('*pedestrian*'):
         # if npc.id != vehicle.id:
@@ -252,28 +261,24 @@ while True:
                         bboxes_dvs.append([x_min, y_min , w, h, '1'])
     # Save the bounding boxes in the scene
 
-    # world.tick()
-    world.wait_for_tick()
-    # image = rgb_stack.pop()
-    image = image_queue.get()
-    timestamp = time_queue.get()
     # event = dvs_stack.pop()
     # timestamp = time_stack.pop()
+
+    image = image_queue.get()
     frame_path = '%06d' % image.frame
     image.save_to_disk(output_path + image_path + frame_path + '.png') # YOLO format
     # cv2.imwrite(output_path + event_path + frame_path + '.png', event)
-
-
     with open(output_path + rgb_label_path + frame_path+".txt", "w", encoding = "utf-8") as file:
         for bbox in bboxes:
             file.write(bbox[0]+f" {bbox[1]} {bbox[2]} {bbox[3]} {bbox[4]}\n")
         file.close()
-    with open("output/bbox.csv", "a", encoding = "utf-8") as file:
-
-        writer = csv.writer(file)
-        for bbox in bboxes_dvs:
-            event = [timestamp] + bbox
-            writer.writerow(event)
-        file.close()
+    if time_queue.empty() != True:
+        timestamp = time_queue.get()
+        with open("output/bbox.csv", "a", encoding = "utf-8") as file:
+            writer = csv.writer(file)
+            for bbox in bboxes_dvs:
+                event = [timestamp] + bbox
+                writer.writerow(event)
+            file.close()
 
 # cv2.destroyAllWindows()

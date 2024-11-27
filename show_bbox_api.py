@@ -2,8 +2,8 @@ import cv2
 import xml.etree.ElementTree as ET
 import os
 
-w = 800
-h = 600
+w = 1280
+h = 720
 
 def voc_xml(xml_file):
     tree = ET.parse(xml_file)

@@ -8,7 +8,7 @@ label_folder = '/home/apg/workspace/carla_generate_dataset/output/rgb_labels'
 # Path and name of the output video file
 video_filename = 'rgb_output_video.avi'
 # Desired frame rate of the video
-frame_rate = 10
+frame_rate = 30
 
 # Get list of image files
 images = [img for img in os.listdir(image_folder) if img.endswith(".jpg") or img.endswith(".png")]
