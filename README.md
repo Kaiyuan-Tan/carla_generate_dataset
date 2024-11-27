@@ -13,10 +13,14 @@ carla_generate_dataset/
 │
 ├── generate_traffic.py     # Generate Dataset
 └── output/
-   ├── images/              # RGB dataset - images
-   │     └── 00001.png
-   ├── rgb_labels/          # RGB dataset - labels
-   │     └── 00001.png 
-   ├── bbox.csv             # Event dataset - bboxes
-   └── dvs_output.csv       # Event dataset - events
+       ├── images/              # RGB dataset - images
+       │      ├── 00001.png
+       │      ├── 00002.png
+       │      └── ...... 
+       ├── rgb_labels/          # RGB dataset - labels
+       │      ├── 00001.txt
+       │      ├── 00002.txt
+       │      └── ...... 
+       ├── bbox.csv             # Event dataset - bboxes
+       └── dvs_output.csv       # Event dataset - events
   ```
