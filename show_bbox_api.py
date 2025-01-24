@@ -5,9 +5,6 @@ import os
 w = 1280
 h = 720
 
-# w = 800
-# h = 600
-
 def voc_xml(xml_file):
     tree = ET.parse(xml_file)
     root = tree.getroot()
@@ -69,15 +66,22 @@ def draw_frame(image_path, path):
             cv2.rectangle(image, (xmin,ymin),(xmax,ymax),(0,0,255),1)
     return image
 
-# xml_file = "/home/apg/workspace/carla_generate_dataset/output/112077.xml"
-# image_path = "/home/apg/workspace/carla_generate_dataset/output/112077.png"
+def rvt_txt(txt_file):
+    boxes = []
+    with open(txt_file, "r", encoding="utf-8") as file:
+        lines = file.readlines()
+        for line in lines:
+            data = line.strip().split(",")
+            # print(data)
 
-image_path = "/home/apg/workspace/carla_generate_dataset/yolodataset/val/images/002047.png"
-path = "/home/apg/workspace/carla_generate_dataset/yolodataset/val/labels/002047.txt"
+            # center_x = float(data[1])*w
+            # center_y = float(data[2])*h
 
-# image_path = "/home/apg/workspace/yolo-dataset/train/images/001002.png"
-# path = "/home/apg/workspace/yolo-dataset/train/labels/001002.txt"
-
-# yolo_txt(path)
-draw_boxes(image_path, path)
-
+            xmin = int(float(data[1]))
+            xmax = int((float(data[1])+float(data[3])))
+            ymin = int(float(data[2]))
+            ymax = int((float(data[2])+float(data[4])))
+            frame = int(data[5])
+            name = data[0]
+            boxes.append((name,(xmin,ymin,xmax,ymax), frame))
+    return boxes
