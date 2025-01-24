@@ -44,13 +44,20 @@ def dvs_callback_csv(data, dvs_output_path): # store in csv file
 
     dvs_events = np.frombuffer(data.raw_data, dtype=np.dtype([
         ('x', np.uint16), ('y',np.uint16), ('t',np.int64), ('pol', np.bool)]))
+    dvs_event_copy = dvs_events.copy()
+    dvs_event_copy['t'] //= 1000
+    # print("dvs_events: ", dvs_events)
+    # print("dvs_event_copy: ", dvs_event_copy)
+
     with open(dvs_output_path, mode="a",  newline='') as file:
         writer = csv.writer(file)
-        for event in dvs_events:
+        for event in dvs_event_copy:
             # combine = event.tolist()
+
+            # print("event: ", event)
             writer.writerow(event)
         file.close()
-    return dvs_events[0]['t']
+    return dvs_event_copy[0]['t']
     
 # dvs_camera.listen(lambda DVSEventArray: dvs_callback_img(DVSEventArray))
 # time.sleep(3)

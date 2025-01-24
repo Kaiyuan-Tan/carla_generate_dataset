@@ -461,7 +461,7 @@ def main():
 
         with open("output/bbox.csv", "w", encoding = "utf-8") as file:
             writer = csv.writer(file)
-            writer.writerow(['t', 'x', 'y', 'w', 'h', 'class_id'])
+            writer.writerow(['t', 'x', 'y', 'w', 'h', 'class_id','class_confidence'])
             file.close()
         # world.tick()
         raw_camera.listen(lambda data: time_queue.put(dvs_api.dvs_callback_csv(data, dvs_output_path)))
@@ -528,7 +528,7 @@ def main():
 
                                 bboxes.append(('0', x_normal, y_normal, w_normal, h_normal))
                                 if velocity >=0.1:
-                                    bboxes_dvs.append([x_min, y_min, w, h, '0'])
+                                    bboxes_dvs.append([x_min, y_min, w, h, 0, 1.0])
             # world.tick()
             # world.wait_for_tick()
 
@@ -574,7 +574,7 @@ def main():
 
                                 bboxes.append(('1', x_normal, y_normal, w_normal, h_normal))
                                 # if velocity > 0:
-                                bboxes_dvs.append([x_min, y_min , w, h, '1'])
+                                bboxes_dvs.append([x_min, y_min , w, h, 1, 1.0])
             # Save the bounding boxes in the scene
 
             # event = dvs_stack.pop()

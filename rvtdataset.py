@@ -2,8 +2,10 @@ import h5py
 import pandas as pd
 import numpy as np
 
+name = "test"
+
 data = pd.read_csv('output/dvs_output.csv')
-with h5py.File("intersection_1_3_td.h5", "w") as h5file:
+with h5py.File(name + "_td.h5", "w") as h5file:
     events_group = h5file.create_group('/events')
     events_group.create_dataset('x',data = data['x'].values)
     events_group.create_dataset('y',data = data['y'].values)
@@ -18,7 +20,8 @@ dtype = np.dtype([
     ('y','<f4'),
     ('w','<f4'),
     ('h','<f4'),
-    ('class_id','<u4'),    
+    ('class_id','<u4'),
+    ('class_confidence','<f4'),
 ])
 bbox = np.genfromtxt('output/bbox.csv', delimiter = ',', skip_header = 1, dtype = dtype)
 # structured_data = np.array(bbox, dtype=dtype)
@@ -32,7 +35,7 @@ bbox = np.genfromtxt('output/bbox.csv', delimiter = ',', skip_header = 1, dtype 
 #     dtype = dtype
 # )
 # # bbox_array = bbox.to_numpy()
-np.save("intersection_1_3_bbox.npy", bbox)
+np.save(name + "_bbox.npy", bbox)
 # bbox = np.load('intersection_1_2_td.npy')
 
 print("FINISH")

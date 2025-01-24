@@ -1,15 +1,15 @@
 import os
 import shutil
 
-image_folder = "/home/apg/workspace/yolo-dataset/output15/images"
-label_folder = "/home/apg/workspace/yolo-dataset/output15/labels"
-destination_image_folder = "/home/apg/workspace/yolo-dataset/val/images"
-destination_label_folder = "/home/apg/workspace/yolo-dataset/val/labels"
+image_folder = "/home/apg/workspace/yolo_dataset/train_4/images"
+label_folder = "/home/apg/workspace/yolo_dataset/train_4/rgb_labels"
+destination_image_folder = "/home/apg/workspace/carla_generate_dataset/yolodataset/train/images"
+destination_label_folder = "/home/apg/workspace/carla_generate_dataset/yolodataset/train/labels"
 
 os.makedirs(destination_image_folder, exist_ok = True)
 os.makedirs(destination_label_folder, exist_ok = True)
 
-count = 0
+count = 12051
 for image_name in os.listdir(image_folder):
     file_id = image_name.split('.')[0]
     new_id = f'{count:06d}'

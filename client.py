@@ -204,7 +204,7 @@ while True:
 
     with open(output_path + label_path + frame_path+".txt", "w", encoding = "utf-8") as file:
         for bbox in bboxes:
-            file.write(bbox[0]+f" {bbox[1]} {bbox[2]} {bbox[3]} {bbox[4]}\n")
+            file.write(bbox[0]+f" {bbox[1]} {bbox[2]} {bbox[3]} {bbox[4]} 1\n")
         file.close()
 
 
